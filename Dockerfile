@@ -3,7 +3,9 @@ FROM python:2.7-alpine
 
 # Installing packages
 RUN apk update
-RUN pip install --no-cache-dir pipenv
+RUN pip install marshmallow
+RUN pip install flask
+RUN pip install enum34
 
 RUN echo http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 RUN echo http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
@@ -17,9 +19,6 @@ COPY . .
 RUN chmod +x /usr/src/app/bootstrap.sh
 RUN dos2unix /usr/src/app/bootstrap.sh
 
-# Install API dependencies
-RUN pipenv install
-
 # Start app
 EXPOSE 5000
-ENTRYPOINT ["/usr/src/app/bootstrap.sh"]
+CMD ["/bin/sh", "/usr/src/app/bootstrap.sh"]
