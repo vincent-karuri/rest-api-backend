@@ -1,14 +1,21 @@
 # Using lightweight alpine image
-FROM python:3.6-alpine
+FROM python:2.7-alpine
 
 # Installing packages
 RUN apk update
 RUN pip install --no-cache-dir pipenv
 
+RUN echo http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
+RUN echo http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
+RUN apk add --no-cache dos2unix
+
 # Defining working directory and adding source code
 WORKDIR /usr/src/app
-COPY Pipfile Pipfile.lock bootstrap.sh ./
-COPY rest_api_backend ./rest_api_backend
+COPY . .
+
+# modify bootstrap.sh to be properly executable
+RUN chmod +x /usr/src/app/bootstrap.sh
+RUN dos2unix /usr/src/app/bootstrap.sh
 
 # Install API dependencies
 RUN pipenv install
